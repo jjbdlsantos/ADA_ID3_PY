@@ -30,7 +30,6 @@ def calcInfoGain(column, dataset):
             entropy = calcEntropy(len(subset), series[0], series[1])
         pEntropy = (Fraction(len(subset), len(dataset))) * entropy
         px -= pEntropy
-    
     return zentropy(dataset, 'Decision') + px 
 
 def zentropy(df, column):
@@ -66,6 +65,23 @@ def main():
         nextBranch[attr] = attributes
     for key in nextBranch.keys():
         print key, nextBranch[key]
+
+def findNextNodes(dataframe, root):
+    dfs = dict(tuple(dataframe.groupby(root)))
+    nextBranch = {}
+    for attr in dataframe[root].unique():
+        del dfs[attr]['Day']
+        del dfs[attr][root]
+        attributes = {}
+        for column in dfs[attr]:
+            if column == 'Decision':
+                pass
+            else:
+                attributes[column] = (calcInfoGain(column, dfs[attr]))
+        nextBranch[attr] = attributes
+    for key in nextBranch.keys():
+        print key, nextBranch[key]
+    return nextBranch
 
 
 main()
